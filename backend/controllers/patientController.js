@@ -1,5 +1,24 @@
 const Patient = require('../models/Patient');
 
+exports.getPatientList = async (req, res, next) => {
+    try {
+
+        const patients = await Patient.find(
+            {},
+            {
+                name: 1,
+                phone: 1,
+                email: 1
+            }
+        ).sort({ name: 1 });
+
+        res.json(patients);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getPatients = async (req, res, next) => {
     try {
 

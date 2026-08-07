@@ -1,0 +1,53 @@
+<div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Bills</h2>
+        <a routerLink="/bills/new"
+            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors">
+            + New Bill
+        </a>
+    </div>
+
+    <div *ngIf="loading" class="text-gray-500 text-sm">Loading bills...</div>
+
+    <div *ngIf="!loading" class="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-3 text-left font-medium text-gray-600">Patient</th>
+                    <th class="px-4 py-3 text-left font-medium text-gray-600">Items</th>
+                    <th class="px-4 py-3 text-left font-medium text-gray-600">Grand Total</th>
+                    <th class="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                    <th class="px-4 py-3 text-right font-medium text-gray-600" *ngIf="authService.isAdmin()">Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr *ngFor="let b of bills" class="hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium text-gray-800">
+                        <a [routerLink]="['/bills', b._id]" class="hover:text-blue-600 hover:underline">
+                            {{ patientName(b) }}
+                        </a>
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">{{ b.items.length }} item(s)</td>
+                    <td class="px-4 py-3 text-gray-800 font-medium">₹{{ b.grandTotal }}</td>
+                    <td class="px-4 py-3">
+                        <button (click)="toggleStatus(b)" [ngClass]="statusClasses(b.status)"
+                            class="text-xs font-medium px-2.5 py-1 rounded-full hover:opacity-80 transition-opacity">
+                            {{ b.status }}
+                        </button>
+                    </td>
+                    <td class="px-4 py-3 text-right" *ngIf="authService.isAdmin()">
+                        <button (click)="deleteBill(b._id!)"
+                            class="text-red-600 hover:text-red-800 text-sm font-medium">
+                            Delete
+                        </button>
+                    </td>
+
+                </tr>
+                <tr *ngIf="bills.length === 0">
+                    <td colspan="5" class="px-4 py-6 text-center text-gray-400">No bills yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,2 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+@media print {
+
+    nav,
+    header,
+    footer,
+    .no-print {
+        display: none !important;
+    }
+
+}

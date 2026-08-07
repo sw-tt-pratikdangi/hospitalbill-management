@@ -38,7 +38,11 @@
                     </td>
                     <td class="px-4 py-3 text-gray-600">₹{{ s.price }}</td>
                     <td class="px-4 py-3 text-right">
-                        <button (click)="deleteService(s._id!)"
+                        <a [routerLink]="['/services', s._id, 'edit']"
+                            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Edit
+                        </a>
+                        <button *ngIf="authService.isAdmin()" (click)="deleteService(s._id!)"
                             class="text-red-600 hover:text-red-800 text-sm font-medium">
                             Delete
                         </button>

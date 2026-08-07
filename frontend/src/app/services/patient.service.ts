@@ -9,6 +9,10 @@ export class PatientService {
 
     constructor(private http: HttpClient) { }
 
+    getPatientDropdown(): Observable<Patient[]> {
+        return this.http.get<Patient[]>(`${this.baseUrl}/dropdown`);
+    }
+
     getAll(page: number = 1, limit: number = 10) {
         return this.http.get<any>(
             `${this.baseUrl}?page=${page}&limit=${limit}`
