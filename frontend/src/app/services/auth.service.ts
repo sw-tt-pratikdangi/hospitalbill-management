@@ -1,0 +1,37 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { AuthResponse } from '../models/user.model';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+    private baseUrl = 'http://localhost:5141/api/auth';
+
+    constructor(private http: HttpClient) { }
+
+    register(data: { name: string; email: string; password: string; role: string }): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.baseUrl}/register`, data);
+    }
+
+    login(data: { email: string; password: string }): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.baseUrl}/login`, data).pipe(
+            tap(res => {
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('user', JSON.stringify(res.user));
+            })
+        );
+    }
+
+    logout(): void {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('token');
+    }
+
+    isLoggedIn(): boolean {
+        return !!this.getToken();
+    }
+}

@@ -1,0 +1,39 @@
+<div class="max-w-lg mx-auto px-4 py-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add Service</h2>
+
+    <form (ngSubmit)="saveService()" class="bg-white p-6 rounded-xl shadow border border-gray-100 space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
+            <input [(ngModel)]="service.name" name="name" required
+                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select [(ngModel)]="service.category" name="category"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Consultation</option>
+                    <option>Lab</option>
+                    <option>Room</option>
+                    <option>Medicine</option>
+                    <option>Surgery</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                <input [(ngModel)]="service.price" name="price" type="number" min="0" required
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+            <a routerLink="/services" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">Cancel</a>
+            <button type="submit" [disabled]="saving"
+                class="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg shadow-sm transition-colors">
+                {{ saving ? 'Saving...' : 'Save Service' }}
+            </button>
+        </div>
+    </form>
+</div>

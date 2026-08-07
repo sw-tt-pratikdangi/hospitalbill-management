@@ -1,0 +1,162 @@
+<div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Patients</h2>
+        <a routerLink="/patients/new"
+            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors">
+            + Add Patient
+        </a>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage"
+        class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex items-center justify-between">
+        <span>{{ errorMessage }}</span>
+        <button (click)="loadPatients()" class="ml-4 font-medium text-red-700 hover:text-red-900 underline">
+            Try Again
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center gap-2 text-gray-500 text-sm py-4">
+        <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Loading patients...</span>
+    </div>
+    <div class="">
+        <!-- Table -->
+        <div *ngIf="!loading" class="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Name</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Email</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Age</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Gender</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Phone</th>
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <tr *ngFor="let p of patients" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium text-gray-800">{{ p.name }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ p.email }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ p.age }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ p.gender }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ p.phone }}</td>
+                        <td class="px-4 py-3 text-right">
+                            <button (click)="deletePatient(getPatientId(p))" [disabled]="deletingId === getPatientId(p)"
+                                class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                                {{ deletingId === getPatientId(p) ? 'Deleting...' : 'Delete' }}
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="patients.length === 0">
+                        <td colspan="6" class="px-4 py-6 text-center text-gray-400">No patients yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="flex items-center justify-between mt-6">
+
+            <!-- Previous -->
+            <button (click)="previousPage()" [disabled]="currentPage === 1 || paginationLoading" class="min-w-[100px] px-4 py-2 border rounded-lg transition-all duration-200
+               disabled:opacity-50 disabled:cursor-not-allowed
+               hover:bg-gray-100 flex items-center justify-center">
+
+                <ng-container *ngIf="!paginationLoading">
+                    ← Previous
+                </ng-container>
+
+                <svg *ngIf="paginationLoading" class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+
+                    <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                    </circle>
+
+                    <path class="opacity-90" fill="currentColor" d="M12 2a10 10 0 0110 10h-4a6 6 0 00-6-6V2z">
+                    </path>
+
+                </svg>
+
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="flex gap-2">
+
+                <button *ngFor="let page of pages" (click)="goToPage(page)" [disabled]="paginationLoading" class="w-10 h-10 rounded-lg border transition-all duration-200
+                   hover:bg-gray-200 disabled:opacity-50" [class.bg-blue-600]="page === currentPage"
+                    [class.text-white]="page === currentPage">
+
+                    <span *ngIf="!paginationLoading">
+                        {{page}}
+                    </span>
+
+                    <svg *ngIf="paginationLoading && page === currentPage" class="w-4 h-4 animate-spin mx-auto"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+                        <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+
+                        <path class="opacity-90" fill="currentColor" d="M12 2a10 10 0 0110 10h-4a6 6 0 00-6-6V2z">
+                        </path>
+
+                    </svg>
+
+                </button>
+
+            </div>
+
+            <!-- Next -->
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages || paginationLoading" class="min-w-[100px] px-4 py-2 border rounded-lg transition-all duration-200
+               disabled:opacity-50 disabled:cursor-not-allowed
+               hover:bg-gray-100 flex items-center justify-center">
+
+                <ng-container *ngIf="!paginationLoading">
+                    Next →
+                </ng-container>
+
+                <svg *ngIf="paginationLoading" class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+
+                    <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                    </circle>
+
+                    <path class="opacity-90" fill="currentColor" d="M12 2a10 10 0 0110 10h-4a6 6 0 00-6-6V2z">
+                    </path>
+
+                </svg>
+
+            </button>
+
+        </div>
+
+        <div class="mt-3 flex items-center justify-between text-sm text-gray-500">
+
+            <span>
+                Showing page <strong>{{currentPage}}</strong> of
+                <strong>{{totalPages}}</strong>
+            </span>
+
+            <span *ngIf="paginationLoading" class="flex items-center gap-2 text-blue-600">
+
+                <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                    </circle>
+
+                </svg>
+
+                Loading...
+
+            </span>
+
+            <span>
+                Total Patients: <strong>{{totalRecords}}</strong>
+            </span>
+
+        </div>
+    </div>
+</div>
