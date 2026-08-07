@@ -17,14 +17,8 @@ export class LoginComponent {
 
   onLogin(): void {
     this.authService.login(this.credentials).subscribe({
-      next: () => this.router.navigate(['/patients']),
-      error: (err) => {
-        if (err.error.message) {
-          this.errorMessage = err.error.message;
-        } else {
-          this.errorMessage = 'Invalid email or password';
-        }
-      }
+      next: () => this.router.navigate(['/dashboard']),
+      error: () => this.errorMessage = 'Invalid email or password'
     });
   }
 }

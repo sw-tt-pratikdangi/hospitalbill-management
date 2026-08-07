@@ -1,0 +1,110 @@
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">New Bill</h2>
+
+    <div class="bg-white p-6 rounded-xl shadow border border-gray-100 space-y-6">
+
+        <!-- Patient selection -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Patient</label>
+            <select [(ngModel)]="selectedPatientId" name="patient"
+                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="" disabled>Select a patient</option>
+                <option *ngFor="let p of patients" [value]="p._id">{{ p.name }} — {{ p.email }} — {{ p.phone }}</option>
+            </select>
+        </div>
+
+        <!-- Service picker -->
+        <div class="border-t border-gray-100 pt-5">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Add a Service</label>
+            <div class="flex flex-wrap gap-3 items-end">
+                <div class="flex-1 min-w-[200px]">
+                    <select [(ngModel)]="selectedServiceId" name="service"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select a service</option>
+                        <option *ngFor="let s of services" [value]="s._id">{{ s.name }} (₹{{ s.price }})</option>
+                    </select>
+                </div>
+                <div class="w-24">
+                    <input [(ngModel)]="quantity" name="quantity" type="number" min="1"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <button type="button" (click)="addItem()"
+                    class="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                    + Add
+                </button>
+            </div>
+        </div>
+
+        <!-- Items table -->
+        <div *ngIf="items.length > 0" class="border-t border-gray-100 pt-5">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="text-left text-gray-500">
+                        <th class="py-2">Service</th>
+                        <th class="py-2">Qty</th>
+                        <th class="py-2">Price</th>
+                        <th class="py-2 text-right">Line Total</th>
+                        <th class="py-2"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <tr *ngFor="let item of items; let i = index">
+                        <td class="py-2 text-gray-800">{{ item.name }}</td>
+                        <td class="py-2 text-gray-600">{{ item.quantity }}</td>
+                        <td class="py-2 text-gray-600">₹{{ item.price }}</td>
+                        <td class="py-2 text-right text-gray-800">₹{{ item.price * item.quantity }}</td>
+                        <td class="py-2 text-right">
+                            <button type="button" (click)="removeItem(i)"
+                                class="text-red-600 hover:text-red-800 text-xs font-medium">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p *ngIf="items.length === 0" class="text-sm text-gray-400 border-t border-gray-100 pt-5">
+            No services added yet.
+        </p>
+
+        <!-- Discount / Tax -->
+        <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-5">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Discount</label>
+                <input [(ngModel)]="discount" name="discount" type="number" min="0"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tax</label>
+                <input [(ngModel)]="tax" name="tax" type="number" min="0"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+        </div>
+
+        <!-- Live totals -->
+        <div class="border-t border-gray-100 pt-5 space-y-1 text-sm">
+            <div class="flex justify-between text-gray-600">
+                <span>Subtotal</span><span>₹{{ subtotal }}</span>
+            </div>
+            <div class="flex justify-between text-gray-600">
+                <span>Discount</span><span>- ₹{{ discount || 0 }}</span>
+            </div>
+            <div class="flex justify-between text-gray-600">
+                <span>Tax</span><span>+ ₹{{ tax || 0 }}</span>
+            </div>
+            <div class="flex justify-between text-lg font-semibold text-gray-900 pt-2 border-t border-gray-100">
+                <span>Grand Total</span><span>₹{{ grandTotal }}</span>
+            </div>
+        </div>
+
+        <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+
+        <div class="flex justify-end gap-3 pt-2">
+            <a routerLink="/bills" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">Cancel</a>
+            <button type="button" (click)="saveBill()" [disabled]="saving"
+                class="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg shadow-sm transition-colors">
+                {{ saving ? 'Saving...' : 'Save Bill' }}
+            </button>
+        </div>
+    </div>
+</div>

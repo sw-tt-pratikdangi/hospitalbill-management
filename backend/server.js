@@ -13,6 +13,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/patients', require('./routes/patientRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
+app.use('/api/bills', require('./routes/billRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
 app.get('/', (req, res) => res.send('Hospital Bill Management API is running'));
 

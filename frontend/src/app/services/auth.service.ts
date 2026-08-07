@@ -34,4 +34,13 @@ export class AuthService {
     isLoggedIn(): boolean {
         return !!this.getToken();
     }
+
+    getRole(): string | null {
+        const stored = localStorage.getItem('user');
+        return stored ? JSON.parse(stored).role : null;
+    }
+
+    isAdmin(): boolean {
+        return this.getRole() === 'Admin';
+    }
 }

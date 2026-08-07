@@ -1,0 +1,75 @@
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+
+    <div *ngIf="loading" class="text-gray-500 text-sm">Loading stats...</div>
+
+    <div *ngIf="!loading && stats" class="space-y-6">
+
+        <!-- Top row: key numbers -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Total Patients</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.totalPatients }}</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Total Bills</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.totalBills }}</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow border border-green-100">
+                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Revenue Collected</p>
+                <p class="text-2xl font-semibold text-green-700">₹{{ stats.totalRevenue }}</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow border border-red-100">
+                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Pending Amount</p>
+                <p class="text-2xl font-semibold text-red-700">₹{{ stats.pendingAmount }}</p>
+            </div>
+
+        </div>
+
+        <!-- Bottom row: status breakdown -->
+        <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+            <p class="text-sm font-medium text-gray-700 mb-4">Bills by Status</p>
+            <div class="flex gap-6">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                    <span class="text-sm text-gray-600">Paid: <span class="font-medium text-gray-900">{{ stats.paidCount
+                            }}</span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                    <span class="text-sm text-gray-600">Unpaid: <span class="font-medium text-gray-900">{{
+                            stats.unpaidCount }}</span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                    <span class="text-sm text-gray-600">Partial: <span class="font-medium text-gray-900">{{
+                            stats.partialCount }}</span></span>
+                </div>
+            </div>
+
+            <!-- Simple proportional bar, no charting library needed -->
+            <div class="mt-4 h-2 w-full rounded-full overflow-hidden flex bg-gray-100">
+                <div class="bg-green-500 h-full" [style.width.%]="(stats.paidCount / stats.totalBills) * 100"></div>
+                <div class="bg-red-500 h-full" [style.width.%]="(stats.unpaidCount / stats.totalBills) * 100"></div>
+                <div class="bg-yellow-500 h-full" [style.width.%]="(stats.partialCount / stats.totalBills) * 100"></div>
+            </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="flex gap-3">
+            <a routerLink="/bills/new"
+                class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors">
+                + New Bill
+            </a>
+            <a routerLink="/patients/new"
+                class="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors">
+                + New Patient
+            </a>
+        </div>
+
+    </div>
+</div>

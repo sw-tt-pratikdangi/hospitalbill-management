@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Service } from '../../models/service.model';
 import { ServiceApiService } from '../../services/service-api.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-service-list',
@@ -24,6 +25,7 @@ export class ServiceListComponent implements OnInit {
 
     constructor(
         private serviceApi: ServiceApiService,
+        public authService: AuthService,
         private cdr: ChangeDetectorRef
     ) { }
 

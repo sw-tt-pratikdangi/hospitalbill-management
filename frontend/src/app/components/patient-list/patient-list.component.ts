@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Patient } from '../../models/patient.model';
 import { PatientService } from '../../services/patient.service';
+import { AuthService } from '../../services/auth.service';
 import { timeout } from 'rxjs';
 
 @Component({
@@ -25,6 +26,7 @@ export class PatientListComponent implements OnInit {
 
   constructor(
     private patientService: PatientService,
+    public authService: AuthService,
     private cdr: ChangeDetectorRef
   ) { }
 
