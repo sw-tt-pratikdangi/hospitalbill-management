@@ -4,7 +4,12 @@ backend/node_modules/
 
 # Environment files
 frontend/.env
+frontend/src/app/environments/.env
+frontend/src/app/environments/environment.ts
+frontend/src/app/environments/environment.prod.ts
 backend/.env
+backend/.env.local
+backend/.env.production
 
 # Logs
 *.log
