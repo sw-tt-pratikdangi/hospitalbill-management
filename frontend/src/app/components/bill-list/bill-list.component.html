@@ -1,53 +1,269 @@
-<div class="max-w-5xl mx-auto px-4 py-8">
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold text-gray-800">Bills</h2>
-        <a routerLink="/bills/new"
-            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors">
-            + New Bill
-        </a>
+<div class="min-h-screen bg-slate-50">
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Header -->
+
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+
+            <div>
+
+                <h1 class="text-3xl font-bold text-slate-900">
+                    Bills
+                </h1>
+
+                <p class="mt-2 text-slate-500">
+                    Manage patient invoices and payment status
+                </p>
+
+            </div>
+
+            <a routerLink="/bills/new" class="inline-flex items-center gap-2
+               px-5 py-3 rounded-xl
+               bg-gradient-to-r from-blue-600 to-indigo-600
+               text-white font-semibold
+               shadow-lg
+               hover:shadow-xl
+               hover:scale-105
+               transition-all duration-300">
+
+                <span>+</span>
+                New Bill
+
+            </a>
+
+        </div>
+
+        <!-- Summary Cards -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+                <p class="text-sm text-slate-500">
+                    Total Bills
+                </p>
+
+                <h3 class="mt-2 text-3xl font-bold text-slate-900">
+                    {{ bills.length }}
+                </h3>
+
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+                <p class="text-sm text-slate-500">
+                    Paid Bills
+                </p>
+
+                <h3 class="mt-2 text-3xl font-bold text-green-600">
+                    {{ bills.filter(b => b.status === 'Paid').length }}
+                </h3>
+
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+                <p class="text-sm text-slate-500">
+                    Pending Bills
+                </p>
+
+                <h3 class="mt-2 text-3xl font-bold text-red-600">
+                    {{ bills.filter(b => b.status !== 'Paid').length }}
+                </h3>
+
+            </div>
+
+        </div>
+
+        <!-- Loading -->
+
+        <div *ngIf="loading" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+
+            <div class="animate-pulse space-y-4">
+
+                <div class="h-14 rounded-xl bg-slate-200"></div>
+                <div class="h-14 rounded-xl bg-slate-200"></div>
+                <div class="h-14 rounded-xl bg-slate-200"></div>
+                <div class="h-14 rounded-xl bg-slate-200"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Bills Table -->
+
+        <div *ngIf="!loading" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+
+            <!-- Table Header -->
+
+            <div class="px-6 py-5 border-b border-slate-200">
+
+                <h2 class="text-lg font-semibold text-slate-800">
+                    Billing Records
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    View and manage patient bills
+                </p>
+
+            </div>
+
+            <!-- Table -->
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-slate-50">
+
+                        <tr>
+
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Patient
+                            </th>
+
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Items
+                            </th>
+
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Grand Total
+                            </th>
+
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Status
+                            </th>
+
+                            <th *ngIf="authService.isAdmin()"
+                                class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-100">
+
+                        <tr *ngFor="let b of bills" class="hover:bg-slate-50 transition-all duration-200">
+
+                            <!-- Patient -->
+
+                            <td class="px-6 py-4">
+
+                                <a [routerLink]="['/bills', b._id]"
+                                    class="font-semibold text-slate-900 hover:text-blue-600 hover:underline">
+
+                                    {{ patientName(b) }}
+
+                                </a>
+
+                            </td>
+
+                            <!-- Items -->
+
+                            <td class="px-6 py-4 text-slate-600">
+
+                                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-medium">
+
+                                    {{ b.items.length }} item(s)
+
+                                </span>
+
+                            </td>
+
+                            <!-- Total -->
+
+                            <td class="px-6 py-4">
+
+                                <span class="text-green-600 font-bold text-base">
+                                    ₹{{ b.grandTotal }}
+                                </span>
+
+                            </td>
+
+                            <!-- Status -->
+
+                            <td class="px-6 py-4">
+
+                                <button (click)="toggleStatus(b)" [ngClass]="statusClasses(b.status)" class="px-3 py-1 rounded-full text-xs font-semibold
+                         hover:opacity-80 transition">
+
+                                    {{ b.status }}
+
+                                </button>
+
+                            </td>
+
+                            <!-- Actions -->
+
+                            <td *ngIf="authService.isAdmin()" class="px-6 py-4">
+
+                                <div class="flex justify-center">
+
+                                    <button (click)="deleteBill(b._id!)" class="px-3 py-2 rounded-xl
+                           bg-red-50 text-red-600
+                           font-medium
+                           hover:bg-red-100
+                           transition">
+
+                                        Delete
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- Empty State -->
+
+                        <tr *ngIf="bills.length === 0">
+
+                            <td colspan="5" class="py-20">
+
+                                <div class="text-center">
+
+                                    <div class="text-6xl mb-4">
+                                        📄
+                                    </div>
+
+                                    <h3 class="text-lg font-semibold text-slate-700">
+                                        No Bills Found
+                                    </h3>
+
+                                    <p class="mt-2 text-slate-500">
+                                        Create your first bill to get started.
+                                    </p>
+
+                                    <a routerLink="/bills/new" class="inline-flex mt-5 px-5 py-3 rounded-xl
+                           bg-blue-600 text-white
+                           hover:bg-blue-700 transition">
+
+                                        Create Bill
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div *ngIf="loading" class="text-gray-500 text-sm">Loading bills...</div>
-
-    <div *ngIf="!loading" class="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Patient</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Items</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Grand Total</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Status</th>
-                    <th class="px-4 py-3 text-right font-medium text-gray-600" *ngIf="authService.isAdmin()">Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                <tr *ngFor="let b of bills" class="hover:bg-gray-50">
-                    <td class="px-4 py-3 font-medium text-gray-800">
-                        <a [routerLink]="['/bills', b._id]" class="hover:text-blue-600 hover:underline">
-                            {{ patientName(b) }}
-                        </a>
-                    </td>
-                    <td class="px-4 py-3 text-gray-600">{{ b.items.length }} item(s)</td>
-                    <td class="px-4 py-3 text-gray-800 font-medium">₹{{ b.grandTotal }}</td>
-                    <td class="px-4 py-3">
-                        <button (click)="toggleStatus(b)" [ngClass]="statusClasses(b.status)"
-                            class="text-xs font-medium px-2.5 py-1 rounded-full hover:opacity-80 transition-opacity">
-                            {{ b.status }}
-                        </button>
-                    </td>
-                    <td class="px-4 py-3 text-right" *ngIf="authService.isAdmin()">
-                        <button (click)="deleteBill(b._id!)"
-                            class="text-red-600 hover:text-red-800 text-sm font-medium">
-                            Delete
-                        </button>
-                    </td>
-
-                </tr>
-                <tr *ngIf="bills.length === 0">
-                    <td colspan="5" class="px-4 py-6 text-center text-gray-400">No bills yet.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 </div>

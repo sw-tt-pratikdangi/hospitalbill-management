@@ -10,3 +10,45 @@
     }
 
 }
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: white !important;
+    }
+
+    .invoice-container {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    table,
+    tr,
+    td,
+    th {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .print\:hidden {
+        display: none !important;
+    }
+
+    .shadow-lg,
+    .shadow-xl,
+    .shadow-sm {
+        box-shadow: none !important;
+    }
+
+    .bg-slate-50 {
+        background: #ffffff !important;
+    }
+}

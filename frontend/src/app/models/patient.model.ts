@@ -1,6 +1,7 @@
 export interface Patient {
     _id?: string;
     id?: string;
+    patientId?: string;
     name: string;
     email?: string;
     phone: string;

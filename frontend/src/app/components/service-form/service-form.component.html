@@ -1,42 +1,253 @@
-<div class="max-w-lg mx-auto px-4 py-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">{{ isEditMode ? 'Edit Service' : 'Add Service' }}</h2>
+<div class="min-h-screen bg-slate-50">
 
-    <div *ngIf="loading" class="text-gray-500 text-sm">Loading service...</div>
+    <div class="max-w-4xl mx-auto px-6 py-8">
 
-    <form *ngIf="!loading" (ngSubmit)="saveService()"
-        class="bg-white p-6 rounded-xl shadow border border-gray-100 space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
-            <input [(ngModel)]="service.name" name="name" required
-                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-        </div>
+        <!-- Page Header -->
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="mb-8 flex items-center justify-between">
+
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select [(ngModel)]="service.category" name="category"
-                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option>Consultation</option>
-                    <option>Lab</option>
-                    <option>Room</option>
-                    <option>Medicine</option>
-                    <option>Surgery</option>
-                    <option>Other</option>
-                </select>
+
+                <h1 class="text-3xl font-bold text-slate-900">
+                    {{ isEditMode ? 'Edit Service' : 'Add Service' }}
+                </h1>
+
+                <p class="mt-2 text-slate-500">
+                    {{
+                    isEditMode
+                    ? 'Update service information and pricing'
+                    : 'Create a new hospital service'
+                    }}
+                </p>
+
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                <input [(ngModel)]="service.price" name="price" type="number" min="0" required
-                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+
+            <div class="hidden md:flex h-16 w-16 items-center justify-center
+               rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600
+               text-white shadow-lg">
+
+                🏥
+
             </div>
+
         </div>
 
-        <div class="flex justify-end gap-3 pt-2">
-            <a routerLink="/services" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">Cancel</a>
-            <button type="submit" [disabled]="saving"
-                class="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium px-5 py-2 rounded-lg shadow-sm transition-colors">
-                {{ saving ? 'Saving...' : (isEditMode ? 'Update Service' : 'Save Service') }}
-            </button>
+        <!-- Loading State -->
+
+        <div *ngIf="loading" class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+
+            <div class="animate-pulse space-y-4">
+
+                <div class="h-8 w-1/3 bg-slate-200 rounded"></div>
+
+                <div class="h-12 bg-slate-200 rounded-xl"></div>
+
+                <div class="h-12 bg-slate-200 rounded-xl"></div>
+
+                <div class="h-12 bg-slate-200 rounded-xl"></div>
+
+            </div>
+
         </div>
-    </form>
+
+        <!-- Form -->
+
+        <form *ngIf="!loading" #f="ngForm" (ngSubmit)="saveService()" novalidate
+            class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+
+            <!-- Header Banner -->
+
+            <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-8 py-6">
+
+                <h2 class="text-xl font-semibold text-white">
+                    Service Details
+                </h2>
+
+                <p class="text-indigo-100 text-sm mt-1">
+                    Configure service type, category and pricing
+                </p>
+
+            </div>
+
+            <!-- Form Body -->
+
+            <div class="p-8 space-y-6">
+
+                <!-- Service Name -->
+
+                <div>
+
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+
+                        Service Name
+
+                    </label>
+
+                    <input [(ngModel)]="service.name" name="name" required minlength="2" #name="ngModel"
+                        placeholder="Enter service name" class="w-full rounded-xl border px-4 py-3
+                   text-sm
+                   transition-all duration-300
+                   focus:ring-4 focus:ring-indigo-100
+                   focus:border-indigo-500
+                   outline-none" [class.border-red-400]="name.invalid && name.touched"
+                        [class.border-slate-300]="!(name.invalid && name.touched)" />
+
+                    <p *ngIf="name.invalid && name.touched" class="mt-2 text-sm text-red-500">
+
+                        Service name is required.
+
+                    </p>
+
+                </div>
+
+                <!-- Category + Price -->
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Category -->
+
+                    <div>
+
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+
+                            Category
+
+                        </label>
+
+                        <select [(ngModel)]="service.category" name="category" required class="w-full rounded-xl border border-slate-300
+                     px-4 py-3 text-sm
+                     focus:ring-4 focus:ring-indigo-100
+                     focus:border-indigo-500
+                     outline-none transition">
+
+                            <option>Consultation</option>
+                            <option>Lab</option>
+                            <option>Room</option>
+                            <option>Medicine</option>
+                            <option>Surgery</option>
+                            <option>Other</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Price -->
+
+                    <div>
+
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+
+                            Price
+
+                        </label>
+
+                        <div class="relative">
+
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+
+                                ₹
+
+                            </span>
+
+                            <input [(ngModel)]="service.price" name="price" type="number" required min="1"
+                                #price="ngModel" placeholder="0.00" class="w-full rounded-xl border pl-10 pr-4 py-3
+                       text-sm
+                       transition-all duration-300
+                       focus:ring-4 focus:ring-green-100
+                       focus:border-green-500
+                       outline-none" [class.border-red-400]="price.invalid && price.touched"
+                                [class.border-slate-300]="!(price.invalid && price.touched)" />
+
+                        </div>
+
+                        <p *ngIf="price.invalid && price.touched" class="mt-2 text-sm text-red-500">
+
+                            Enter a valid amount greater than 0.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- Service Category Preview -->
+
+                <div *ngIf="service.category" class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+
+                    <p class="text-sm text-slate-500 mb-2">
+                        Selected Category
+                    </p>
+
+                    <span class="inline-flex px-4 py-2 rounded-full text-sm font-medium
+                   bg-indigo-100 text-indigo-700">
+
+                        {{ service.category }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="border-t border-slate-200 bg-slate-50 px-8 py-5">
+
+                <div class="flex flex-col-reverse md:flex-row justify-end gap-3">
+
+                    <a routerLink="/services" class="px-5 py-3 rounded-xl border border-slate-300
+                   bg-white text-slate-700
+                   font-medium text-center
+                   hover:bg-slate-100 transition">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit" [disabled]="f.invalid || saving" class="px-6 py-3 rounded-xl
+                   bg-gradient-to-r from-indigo-600 to-purple-600
+                   text-white font-semibold
+                   shadow-lg
+                   hover:shadow-xl
+                   hover:scale-[1.02]
+                   active:scale-95
+                   disabled:opacity-50
+                   disabled:cursor-not-allowed
+                   transition-all duration-300">
+
+                        <span *ngIf="!saving">
+                            {{
+                            isEditMode
+                            ? 'Update Service'
+                            : 'Save Service'
+                            }}
+                        </span>
+
+                        <span *ngIf="saving" class="flex items-center justify-center gap-2">
+
+                            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4">
+                                </circle>
+
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z">
+                                </path>
+
+                            </svg>
+
+                            Saving...
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
