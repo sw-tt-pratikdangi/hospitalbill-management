@@ -1,4 +1,16 @@
 const Patient = require('../models/Patient');
+const getNextSequence = require('../utils/getNextSequence');
+
+exports.checkPhoneExists = async (req, res) => {
+    const { phone } = req.params;
+    const { excludeId } = req.query; // used on the Edit form, to ignore the patient's own record
+
+    const query = { phone };
+    if (excludeId) query._id = { $ne: excludeId };
+
+    const existing = await Patient.findOne(query).select('name patientId phone');
+    res.json({ exists: !!existing, patient: existing || null });
+};
 
 exports.getPatientList = async (req, res, next) => {
     try {
@@ -64,13 +76,19 @@ exports.getPatientById = async (req, res, next) => {
     }
 };
 
-exports.createPatient = async (req, res, next) => {
+exports.createPatient = async (req, res) => {
+    const seq = await getNextSequence('patientId');
+    const patientId = 'P' + String(seq).padStart(3, '0');
+
     try {
-        const patient = new Patient(req.body);
+        const patient = new Patient({ ...req.body, patientId });
         const saved = await patient.save();
         res.status(201).json(saved);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        if (err.code === 11000) {
+            return res.status(409).json({ message: 'A patient with this phone number already exists' });
+        }
+        throw err; // let errorHandler.js handle anything unexpected
     }
 };
 

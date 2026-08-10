@@ -35,4 +35,11 @@ export class PatientService {
     delete(id: string): Observable<any> {
         return this.http.delete(`${this.baseUrl}/${id}`);
     }
+
+    checkPhoneExists(phone: string, excludeId?: string): Observable<{ exists: boolean; patient: Patient | null }> {
+        const url = excludeId
+            ? `${this.baseUrl}/check-phone/${phone}?excludeId=${excludeId}`
+            : `${this.baseUrl}/check-phone/${phone}`;
+        return this.http.get<{ exists: boolean; patient: Patient | null }>(url);
+    }
 }

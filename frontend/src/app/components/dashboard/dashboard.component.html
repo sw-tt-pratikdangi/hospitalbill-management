@@ -1,83 +1,327 @@
-<div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h2 class="text-2xl font-bold text-slate-800">
-            Dashboard
-        </h2>
+<div class="min-h-screen bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6 py-8">
 
-        <p class="text-slate-500 mt-2">
-            Overview of hospital billing performance
-        </p>
-    </div>
+        <!-- Header -->
 
-    <div *ngIf="loading" class="text-gray-500 text-sm">Loading stats...</div>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
 
-    <div *ngIf="!loading && stats" class="space-y-6">
+            <div>
+                <h1 class="text-4xl font-bold text-slate-900">
+                    Dashboard
+                </h1>
 
-        <!-- Top row: key numbers -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-            <div class="bg-white p-5 rounded-xl shadow border border-blue-100">
-                <p class="text-xs uppercase tracking-wide text-blue-400 mb-1">Total Patients</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.totalPatients }}</p>
+                <p class="mt-2 text-slate-500">
+                    Overview of hospital billing performance
+                </p>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow border border-purple-100">
-                <p class="text-xs uppercase tracking-wide text-purple-400 mb-1">Total Bills</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.totalBills }}</p>
-            </div>
+            <div class="flex gap-3 mt-4 md:mt-0">
 
-            <div class="bg-white p-5 rounded-xl shadow border border-green-100">
-                <p class="text-xs uppercase tracking-wide text-green-700 mb-1">Revenue Collected</p>
-                <p class="text-2xl font-semibold text-green-700">₹{{ stats.totalRevenue }}</p>
-            </div>
+                <a routerLink="/bills/new" class="inline-flex items-center px-5 py-3 rounded-xl
+                 bg-gradient-to-r from-blue-600 to-indigo-600
+                 text-white font-semibold shadow-lg
+                 hover:shadow-xl hover:scale-105
+                 transition-all duration-300">
 
-            <div class="bg-white p-5 rounded-xl shadow border border-red-100">
-                <p class="text-xs uppercase tracking-wide text-red-500 mb-1">Pending Amount</p>
-                <p class="text-2xl font-semibold text-red-500">₹{{ stats.pendingAmount }}</p>
+                    + New Bill
+
+                </a>
+
+                <a routerLink="/patients/new" class="inline-flex items-center px-5 py-3 rounded-xl
+                 bg-white border border-slate-200
+                 text-slate-700 font-semibold
+                 hover:bg-slate-100
+                 transition">
+
+                    + New Patient
+
+                </a>
+
             </div>
 
         </div>
 
-        <!-- Bottom row: status breakdown -->
-        <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-            <p class="text-sm font-medium text-gray-700 mb-4">Bills by Status</p>
+        <!-- Loading State -->
 
-            <div class="flex gap-6">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
-                    <span class="text-sm text-gray-600">Paid: <span class="font-medium text-gray-900">{{ stats.paidCount
-                            }}</span></span>
+        <div *ngIf="loading">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+                <div *ngFor="let item of [1,2,3,4]" class="h-36 bg-white rounded-2xl shadow animate-pulse">
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-                    <span class="text-sm text-gray-600">Unpaid: <span class="font-medium text-gray-900">{{
-                            stats.unpaidCount }}</span></span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
-                    <span class="text-sm text-gray-600">Partial: <span class="font-medium text-gray-900">{{
-                            stats.partialCount }}</span></span>
-                </div>
+
             </div>
 
-            <!-- Simple proportional bar, no charting library needed -->
-            <div class="mt-4 h-2 w-full rounded-full overflow-hidden flex bg-gray-100">
-                <div class="bg-green-500 h-full" [style.width.%]="(stats.paidCount / stats.totalBills) * 100"></div>
-                <div class="bg-red-400 h-full" [style.width.%]="(stats.unpaidCount / stats.totalBills) * 100"></div>
-                <div class="bg-yellow-500 h-full" [style.width.%]="(stats.partialCount / stats.totalBills) * 100"></div>
-            </div>
         </div>
 
-        <!-- Quick actions -->
-        <div class="flex gap-3">
-            <a routerLink="/bills/new"
-                class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:scale-105 transition">
-                + New Bill
-            </a>
-            <a routerLink="/patients/new"
-                class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:scale-105 transition">
-                + New Patient
-            </a>
+        <!-- Dashboard Data -->
+
+        <div *ngIf="!loading && stats" class="space-y-8">
+
+            <!-- KPI Cards -->
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+
+                <!-- Patients -->
+
+                <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm
+                 hover:shadow-xl hover:-translate-y-1
+                 transition-all duration-300">
+
+                    <div class="flex justify-between">
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Total Patients
+                            </p>
+
+                            <h3 class="mt-3 text-4xl font-bold text-slate-900">
+                                {{ stats.totalPatients }}
+                            </h3>
+                        </div>
+
+                        <div class="w-14 h-14 rounded-2xl bg-blue-100
+                     flex items-center justify-center">
+
+                            <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5V4H2v16h5m10 0v-2a4 4 0 00-8 0v2m8 0H9m4-11a4 4 0 110 8 4 4 0 010-8z">
+                                </path>
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Bills -->
+
+                <div class="bg-white rounded-2xl p-6 border border-purple-100 shadow-sm
+                 hover:shadow-xl hover:-translate-y-1
+                 transition-all duration-300">
+
+                    <div class="flex justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-slate-500">
+                                Total Bills
+                            </p>
+
+                            <h3 class="mt-3 text-4xl font-bold text-slate-900">
+                                {{ stats.totalBills }}
+                            </h3>
+
+                        </div>
+
+                        <div class="w-14 h-14 rounded-2xl bg-purple-100
+                     flex items-center justify-center">
+
+                            <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6M7 4h10l2 2v14H5V6l2-2z">
+                                </path>
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Revenue -->
+
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50
+                 rounded-2xl p-6 border border-green-100 shadow-sm
+                 hover:shadow-xl hover:-translate-y-1
+                 transition-all duration-300">
+
+                    <div class="flex justify-between">
+
+                        <div>
+                            <p class="text-sm text-green-700">
+                                Revenue Collected
+                            </p>
+
+                            <h3 class="mt-3 text-4xl font-bold text-green-700">
+                                ₹{{ stats.totalRevenue }}
+                            </h3>
+                        </div>
+
+                        <div class="w-14 h-14 rounded-2xl bg-green-100
+                     flex items-center justify-center">
+
+                            💰
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Pending -->
+
+                <div class="bg-gradient-to-br from-red-50 to-rose-50
+                 rounded-2xl p-6 border border-red-100 shadow-sm
+                 hover:shadow-xl hover:-translate-y-1
+                 transition-all duration-300">
+
+                    <div class="flex justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-red-600">
+                                Pending Amount
+                            </p>
+
+                            <h3 class="mt-3 text-4xl font-bold text-red-600">
+                                ₹{{ stats.pendingAmount }}
+                            </h3>
+
+                        </div>
+
+                        <div class="w-14 h-14 rounded-2xl bg-red-100
+                     flex items-center justify-center">
+
+                            ⏳
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Billing Status -->
+
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+
+                <h2 class="text-xl font-bold text-slate-800">
+                    Billing Status
+                </h2>
+
+                <p class="text-slate-500 mt-1">
+                    Invoice distribution overview
+                </p>
+
+                <!-- Status Cards -->
+
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+
+                    <div class="bg-green-50 rounded-xl p-5 border border-green-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="text-green-700 font-medium">Paid</span>
+                        </div>
+
+                        <div class="mt-3 text-3xl font-bold text-slate-900">
+                            {{ stats.paidCount }}
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50 rounded-xl p-5 border border-red-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <span class="text-red-700 font-medium">Unpaid</span>
+                        </div>
+
+                        <div class="mt-3 text-3xl font-bold text-slate-900">
+                            {{ stats.unpaidCount }}
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 rounded-xl p-5 border border-yellow-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <span class="text-yellow-700 font-medium">Partial</span>
+                        </div>
+
+                        <div class="mt-3 text-3xl font-bold text-slate-900">
+                            {{ stats.partialCount }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Progress -->
+
+                <div class="mt-8 h-5 rounded-full overflow-hidden bg-slate-100 flex">
+
+                    <div class="bg-green-500 transition-all duration-1000"
+                        [style.width.%]="(stats.paidCount / stats.totalBills) * 100">
+                    </div>
+
+                    <div class="bg-red-500 transition-all duration-1000"
+                        [style.width.%]="(stats.unpaidCount / stats.totalBills) * 100">
+                    </div>
+
+                    <div class="bg-yellow-400 transition-all duration-1000"
+                        [style.width.%]="(stats.partialCount / stats.totalBills) * 100">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+
+            <div class="bg-gradient-to-r
+               from-blue-600
+               via-indigo-600
+               to-purple-600
+               rounded-3xl
+               p-8
+               shadow-xl">
+
+                <h2 class="text-2xl font-bold text-white">
+                    Quick Actions
+                </h2>
+
+                <p class="text-blue-100 mt-2">
+                    Manage hospital operations quickly
+                </p>
+
+                <div class="flex flex-wrap gap-4 mt-6">
+
+                    <a routerLink="/bills/new" class="px-6 py-3 bg-white text-blue-700
+                   rounded-xl font-semibold
+                   hover:scale-105
+                   transition">
+
+                        Create Bill
+
+                    </a>
+
+                    <a routerLink="/patients/new" class="px-6 py-3 bg-white/20
+                   border border-white/30
+                   text-white rounded-xl font-semibold
+                   hover:bg-white/30
+                   transition">
+
+                        Add Patient
+
+                    </a>
+
+                    <a routerLink="/services" class="px-6 py-3 bg-white/20
+                   border border-white/30
+                   text-white rounded-xl font-semibold
+                   hover:bg-white/30
+                   transition">
+
+                        View Services
+
+                    </a>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>

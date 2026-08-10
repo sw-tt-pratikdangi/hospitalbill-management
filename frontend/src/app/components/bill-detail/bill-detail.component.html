@@ -1,85 +1,267 @@
-<div *ngIf="loading" class="max-w-3xl mx-auto px-4 py-8 text-gray-500 text-sm">Loading invoice...</div>
+<div *ngIf="!loading && bill" class="max-w-4xl mx-auto px-4 py-4 print:px-0 print:py-0">
 
-<div *ngIf="!loading && bill" class="max-w-3xl mx-auto px-4 py-8">
+    <!-- Action Bar -->
 
-    <!-- Screen-only controls: hidden when printing -->
-    <div class="flex items-center justify-between mb-6 print:hidden">
-        <a routerLink="/bills" class="text-sm font-medium text-gray-600 hover:text-gray-800">&larr; Back to Bills</a>
-        <button (click)="printInvoice()"
-            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-colors no-print">
+    <div class="flex items-center justify-between mb-4 print:hidden">
+
+        <a routerLink="/bills" class="text-sm font-medium text-slate-600 hover:text-slate-900">
+
+            ← Back to Bills
+
+        </a>
+
+        <button (click)="printInvoice()" class="px-4 py-2 rounded-lg
+             bg-blue-600 hover:bg-blue-700
+             text-white font-medium">
+
             Print Invoice
+
         </button>
+
     </div>
 
-    <!-- The invoice itself -->
-    <div class="bg-white p-8 rounded-xl shadow border border-gray-100 print:shadow-none print:border-0 print:p-0">
+    <!-- Invoice -->
 
-        <div class="flex items-start justify-between border-b border-gray-200 pb-6 mb-6">
-            <div>
-                <h1 class="text-xl font-bold text-gray-900">🏥 Hospital Billing System</h1>
-                <p class="text-sm text-gray-500 mt-1">123 Health Street, Ahmedabad, Gujarat</p>
+    <div class="invoice-container
+           bg-white
+           rounded-2xl
+           border border-slate-200
+           shadow-lg
+           overflow-hidden
+           print:shadow-none
+           print:border-0">
+
+        <!-- Header -->
+
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600
+             px-6 py-5 print:px-4 print:py-3 text-white">
+
+            <div class="flex justify-between items-start">
+
+                <div>
+
+                    <h1 class="text-2xl font-bold">
+                        🏥 Hospital Billing System
+                    </h1>
+
+                    <p class="text-blue-100 text-sm mt-1">
+                        123 Health Street, Ahmedabad, Gujarat
+                    </p>
+
+                </div>
+
+                <div class="text-right">
+
+                    <p class="text-blue-100 text-xs">
+                        Invoice Number
+                    </p>
+
+                    <p class="font-mono text-sm font-semibold">
+                        {{ bill._id }}
+                    </p>
+
+                    <p class="text-xs text-blue-100 mt-1">
+                        {{ bill.createdAt | date:'mediumDate' }}
+                    </p>
+
+                </div>
+
             </div>
-            <div class="text-right">
-                <p class="text-sm text-gray-500">Invoice #</p>
-                <p class="text-sm font-mono text-gray-800">{{ bill._id }}</p>
-                <p class="text-sm text-gray-500 mt-1">{{ bill.createdAt | date:'mediumDate' }}</p>
-            </div>
+
         </div>
 
-        <div class="grid grid-cols-2 gap-6 mb-8">
-            <div>
-                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Billed To</p>
-                <p class="text-sm font-medium text-gray-800">{{ patientName }}</p>
-                <p class="text-sm text-gray-500">{{ patientPhone }}</p>
+        <!-- Body -->
+
+        <div class="p-6 print:p-3">
+
+            <!-- Customer Section -->
+
+            <div class="grid grid-cols-2 gap-4 mb-5 print:mb-3">
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+
+                    <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">
+
+                        Billed To
+
+                    </p>
+
+                    <p class="font-semibold text-slate-900">
+                        {{ patientName }}
+                    </p>
+
+                    <p class="text-sm text-slate-500">
+                        {{ patientPhone }}
+                    </p>
+
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-right">
+
+                    <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">
+
+                        Status
+
+                    </p>
+
+                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="{
+              'bg-green-100 text-green-700': bill.status === 'Paid',
+              'bg-yellow-100 text-yellow-700': bill.status === 'Partial',
+              'bg-red-100 text-red-700': bill.status === 'Unpaid'
+            }">
+
+                        {{ bill.status }}
+
+                    </span>
+
+                </div>
+
             </div>
-            <div class="text-right">
-                <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Status</p>
-                <span class="inline-block text-xs font-medium px-2.5 py-1 rounded-full" [ngClass]="{
-                'bg-green-50 text-green-700': bill.status === 'Paid',
-                'bg-yellow-50 text-yellow-700': bill.status === 'Partial',
-                'bg-red-50 text-red-700': bill.status === 'Unpaid'
-              }">
-                    {{ bill.status }}
-                </span>
+
+            <!-- Services Table -->
+
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-slate-50">
+
+                        <tr>
+
+                            <th class="px-4 py-3 print:py-2
+                       text-left text-xs font-semibold uppercase text-slate-500">
+
+                                Service
+
+                            </th>
+
+                            <th class="px-4 py-3 print:py-2
+                       text-center text-xs font-semibold uppercase text-slate-500">
+
+                                Qty
+
+                            </th>
+
+                            <th class="px-4 py-3 print:py-2
+                       text-right text-xs font-semibold uppercase text-slate-500">
+
+                                Price
+
+                            </th>
+
+                            <th class="px-4 py-3 print:py-2
+                       text-right text-xs font-semibold uppercase text-slate-500">
+
+                                Amount
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-100">
+
+                        <tr *ngFor="let item of bill.items">
+
+                            <td class="px-4 py-3 print:py-2">
+                                {{ item.name }}
+                            </td>
+
+                            <td class="px-4 py-3 print:py-2 text-center">
+                                {{ item.quantity }}
+                            </td>
+
+                            <td class="px-4 py-3 print:py-2 text-right">
+                                ₹{{ item.price }}
+                            </td>
+
+                            <td class="px-4 py-3 print:py-2 text-right font-semibold">
+
+                                ₹{{ item.price * item.quantity }}
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
+
+            <!-- Totals -->
+
+            <div class="flex justify-end mt-5 print:mt-3">
+
+                <div class="w-72 bg-slate-50 border border-slate-200 rounded-xl p-4">
+
+                    <div class="space-y-2 text-sm">
+
+                        <div class="flex justify-between">
+
+                            <span>Subtotal</span>
+
+                            <span>
+                                ₹{{ bill.subtotal }}
+                            </span>
+
+                        </div>
+
+                        <div class="flex justify-between">
+
+                            <span>Discount</span>
+
+                            <span>
+                                - ₹{{ bill.discount }}
+                            </span>
+
+                        </div>
+
+                        <div class="flex justify-between">
+
+                            <span>Tax</span>
+
+                            <span>
+                                + ₹{{ bill.tax }}
+                            </span>
+
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-2 flex justify-between">
+
+                            <span class="font-bold">
+                                Grand Total
+                            </span>
+
+                            <span class="text-xl font-bold text-green-600">
+                                ₹{{ bill.grandTotal }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="mt-5 print:mt-3 pt-3 border-t border-slate-200 text-center">
+
+                <p class="text-xs text-slate-500">
+                    Thank you for choosing our hospital.
+                </p>
+
+                <p class="text-[10px] text-slate-400 mt-1">
+                    This invoice was generated electronically and does not require a signature.
+                </p>
+
+            </div>
+
         </div>
 
-        <table class="min-w-full text-sm mb-8">
-            <thead>
-                <tr class="text-left text-gray-500 border-b border-gray-200">
-                    <th class="py-2">Service</th>
-                    <th class="py-2 text-center">Qty</th>
-                    <th class="py-2 text-right">Price</th>
-                    <th class="py-2 text-right">Amount</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                <tr *ngFor="let item of bill.items">
-                    <td class="py-2 text-gray-800">{{ item.name }}</td>
-                    <td class="py-2 text-center text-gray-600">{{ item.quantity }}</td>
-                    <td class="py-2 text-right text-gray-600">₹{{ item.price }}</td>
-                    <td class="py-2 text-right text-gray-800">₹{{ item.price * item.quantity }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="flex justify-end">
-            <div class="w-64 space-y-1 text-sm">
-                <div class="flex justify-between text-gray-600">
-                    <span>Subtotal</span><span>₹{{ bill.subtotal }}</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                    <span>Discount</span><span>- ₹{{ bill.discount }}</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                    <span>Tax</span><span>+ ₹{{ bill.tax }}</span>
-                </div>
-                <div class="flex justify-between text-base font-semibold text-gray-900 pt-2 border-t border-gray-200">
-                    <span>Grand Total</span><span>₹{{ bill.grandTotal }}</span>
-                </div>
-            </div>
-        </div>
-
-        <p class="text-xs text-gray-400 text-center mt-10">Thank you for choosing our hospital. Get well soon.</p>
     </div>
+
 </div>
