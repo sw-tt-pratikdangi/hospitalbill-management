@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bill } from '../models/bill.model';
 import { Patient } from '../models/patient.model';
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BillService {
-    private baseUrl = 'http://localhost:5141/api/bills';
+    private baseUrl = `${environment.apiUrl}/bills`;
 
     constructor(private http: HttpClient) { }
 

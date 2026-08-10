@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PatientListComponent } from './components/patient-list/patient-list.component';
 import { PatientFormComponent } from './components/patient-form/patient-form.component';
@@ -9,9 +10,11 @@ import { BillListComponent } from './components/bill-list/bill-list.component';
 import { BillFormComponent } from './components/bill-form/bill-form.component';
 import { BillDetailComponent } from './components/bill-detail/bill-detail.component';
 import { authGuard } from './guards/auth.guard';
+import { guestGuard } from './guards/guest.guard';
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+    { path: 'register', component: RegisterComponent },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
 
     { path: 'patients', component: PatientListComponent, canActivate: [authGuard] },

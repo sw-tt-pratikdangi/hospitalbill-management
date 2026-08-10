@@ -1,0 +1,47 @@
+<div class="max-w-md mx-auto px-4 py-16">
+    <div class="bg-white p-8 rounded-xl shadow border border-gray-100">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-1">Create Account</h2>
+        <p class="text-sm text-gray-500 mb-6">Register as hospital staff to access the billing system.</p>
+
+        <form (ngSubmit)="onRegister()" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input [(ngModel)]="form.name" name="name" required
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input [(ngModel)]="form.email" name="email" type="email" required
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input [(ngModel)]="form.password" name="password" type="password" required minlength="6"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <select [(ngModel)]="form.role" name="role"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="Receptionist">Receptionist</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+
+            <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+
+            <button type="submit" [disabled]="saving"
+                class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium px-4 py-2.5 rounded-lg shadow-sm transition-colors">
+                {{ saving ? 'Creating account...' : 'Create Account' }}
+            </button>
+        </form>
+
+        <p class="text-sm text-gray-500 text-center mt-6">
+            Already have an account?
+            <a routerLink="/login" class="text-blue-600 hover:underline font-medium">Log in</a>
+        </p>
+    </div>
+</div>
