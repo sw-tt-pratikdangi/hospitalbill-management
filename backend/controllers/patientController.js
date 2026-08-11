@@ -20,7 +20,7 @@ exports.getPatientList = async (req, res, next) => {
             {
                 name: 1,
                 phone: 1,
-                email: 1
+                patientId: 1
             }
         ).sort({ name: 1 });
 

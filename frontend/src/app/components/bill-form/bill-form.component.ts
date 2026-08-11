@@ -19,6 +19,10 @@ export class BillFormComponent implements OnInit {
     patients: Patient[] = [];
     services: Service[] = [];
 
+    patientSearchTerm = '';
+    showPatientDropdown = false;
+    selectedPatient: Patient | null = null;
+
     selectedPatientId = '';
     selectedServiceId = '';
     quantity = 1;
@@ -52,6 +56,41 @@ export class BillFormComponent implements OnInit {
             }
         });
 
+    }
+
+    // --- Patient combobox behavior ---
+
+    get filteredPatients(): Patient[] {
+        const term = this.patientSearchTerm.trim().toLowerCase();
+
+        if (!term) return this.patients;
+        return this.patients.filter(p =>
+            p.name.toLowerCase().includes(term) ||
+            (p.patientId && p.patientId.toLowerCase().includes(term))
+        );
+    }
+
+    onPatientSearchFocus(): void {
+        this.showPatientDropdown = true;
+    }
+
+    onPatientSearchBlur(): void {
+        // Small delay so a click on a dropdown item registers before the panel closes.
+        // Without this, (blur) fires first and the (click)/(mousedown) below never gets a chance to run.
+        setTimeout(() => this.showPatientDropdown = false, 150);
+    }
+
+    selectPatient(patient: Patient): void {
+        this.selectedPatient = patient;
+        this.selectedPatientId = patient._id!;
+        this.patientSearchTerm = `${patient.name} (${patient.patientId ?? 'no ID'})`;
+        this.showPatientDropdown = false;
+    }
+
+    clearPatientSelection(): void {
+        this.selectedPatient = null;
+        this.selectedPatientId = '';
+        this.patientSearchTerm = '';
     }
 
     // Add the currently-selected service (with quantity) to the bill's item list
