@@ -112,7 +112,7 @@
 
                 <div class="w-full md:w-80">
 
-                    <input type="text" placeholder="Search services..." class="w-full px-4 py-3 rounded-xl
+                    <input [(ngModel)]="searchTerm" type="text" placeholder="Search services..." class="w-full px-4 py-3 rounded-xl
                    border border-slate-300
                    focus:ring-4 focus:ring-indigo-100
                    focus:border-indigo-500
@@ -158,7 +158,7 @@
 
                     <tbody class="divide-y divide-slate-100">
 
-                        <tr *ngFor="let s of paginatedServices" class="hover:bg-slate-50 transition-all duration-200">
+                        <tr *ngFor="let s of filteredServices" class="hover:bg-slate-50 transition-all duration-200">
 
                             <!-- NAME -->
 
@@ -287,7 +287,17 @@
                             </td>
 
                         </tr>
+                        <!-- No services at all -->
+                        <tr *ngIf="services.length === 0">
+                            <td colspan="4" class="px-4 py-6 text-center text-gray-400">No services yet.</td>
+                        </tr>
 
+                        <!-- Services exist, but none match the search -->
+                        <tr *ngIf="services.length > 0 && filteredServices.length === 0">
+                            <td colspan="4" class="px-4 py-6 text-center text-gray-400">
+                                No services match "{{ searchTerm }}".
+                            </td>
+                        </tr>
                     </tbody>
 
                 </table>
