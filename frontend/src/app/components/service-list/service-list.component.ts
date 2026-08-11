@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Service } from '../../models/service.model';
 import { ServiceApiService } from '../../services/service-api.service';
@@ -8,13 +9,14 @@ import { AuthService } from '../../services/auth.service';
 @Component({
     selector: 'app-service-list',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, FormsModule],
     templateUrl: './service-list.component.html'
 })
 export class ServiceListComponent implements OnInit {
 
     services: Service[] = [];
     paginatedServices: Service[] = [];
+    searchTerm = '';
 
     loading = true;
 
@@ -50,6 +52,15 @@ export class ServiceListComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    get filteredServices(): Service[] {
+        const term = this.searchTerm.trim().toLowerCase();
+        if (!term) return this.services;
+
+        return this.services.filter(s =>
+            s.name.toLowerCase().includes(term) || s.category.toLowerCase().includes(term)
+        );
     }
 
     updatePagination(): void {
