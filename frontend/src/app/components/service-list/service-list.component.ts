@@ -15,7 +15,6 @@ import { AuthService } from '../../services/auth.service';
 export class ServiceListComponent implements OnInit {
 
     services: Service[] = [];
-    paginatedServices: Service[] = [];
     searchTerm = '';
 
     loading = true;
@@ -23,7 +22,6 @@ export class ServiceListComponent implements OnInit {
     // Pagination
     currentPage = 1;
     itemsPerPage = 5;
-    totalPages = 0;
 
     constructor(
         private serviceApi: ServiceApiService,
@@ -41,10 +39,7 @@ export class ServiceListComponent implements OnInit {
         this.serviceApi.getAll().subscribe({
             next: (data) => {
                 this.services = data || [];
-                this.totalPages = Math.ceil(this.services.length / this.itemsPerPage);
-
-                this.updatePagination();
-
+                this.currentPage = 1; // reset to page 1 on every fresh load
                 this.loading = false;
                 this.cdr.markForCheck();
             },
@@ -63,51 +58,46 @@ export class ServiceListComponent implements OnInit {
         );
     }
 
-    updatePagination(): void {
-
-        const start = (this.currentPage - 1) * this.itemsPerPage;
-        const end = start + this.itemsPerPage;
-
-        this.paginatedServices = this.services.slice(start, end);
+    // Derived from filteredServices, not the raw list — this is what keeps
+    // search and pagination in sync without any manual "resync" step.
+    get totalPages(): number {
+        return Math.max(1, Math.ceil(this.filteredServices.length / this.itemsPerPage));
     }
 
-    nextPage(): void {
-
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.updatePagination();
-        }
-
-    }
-
-    previousPage(): void {
-
-        if (this.currentPage > 1) {
-            this.currentPage--;
-            this.updatePagination();
-        }
-
-    }
-
-    goToPage(page: number): void {
-
-        this.currentPage = page;
-        this.updatePagination();
-
-    }
-
-    deleteService(id: string): void {
-
-        if (confirm('Delete this service?')) {
-            this.serviceApi.delete(id).subscribe(() => {
-                this.loadServices();
-            });
-        }
-
+    get paginatedServices(): Service[] {
+        // Clamp instead of trusting currentPage blindly: if a search shrinks the
+        // result set while you're on page 3, this snaps back to the last valid
+        // page instead of returning an empty slice.
+        const page = Math.min(this.currentPage, this.totalPages);
+        const start = (page - 1) * this.itemsPerPage;
+        return this.filteredServices.slice(start, start + this.itemsPerPage);
     }
 
     get pages(): number[] {
         return Array.from({ length: this.totalPages }, (_, i) => i + 1);
     }
 
+    nextPage(): void {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+        }
+    }
+
+    previousPage(): void {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        }
+    }
+
+    goToPage(page: number): void {
+        this.currentPage = page;
+    }
+
+    deleteService(id: string): void {
+        if (confirm('Delete this service?')) {
+            this.serviceApi.delete(id).subscribe(() => {
+                this.loadServices();
+            });
+        }
+    }
 }
