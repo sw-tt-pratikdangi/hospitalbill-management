@@ -1,383 +1,248 @@
 <div class="min-h-screen bg-slate-50">
-
     <div class="max-w-7xl mx-auto px-6 py-8">
-
         <!-- PAGE HEADER -->
-
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
-
             <div>
                 <h1 class="text-3xl font-bold text-slate-900">
                     Services
                 </h1>
-
                 <p class="mt-2 text-slate-500">
                     Manage hospital services, categories and pricing
                 </p>
             </div>
-
             <a routerLink="/services/new" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl
                bg-gradient-to-r from-indigo-600 to-purple-600
                text-white font-semibold shadow-lg
                hover:shadow-xl hover:scale-105
                transition-all duration-300">
-
                 <span class="text-lg">+</span>
                 Add Service
-
             </a>
-
         </div>
-
         <!-- SUMMARY CARDS -->
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-
                 <p class="text-sm text-slate-500">
                     Total Services
                 </p>
-
                 <h3 class="mt-2 text-3xl font-bold text-slate-900">
                     {{ services.length }}
                 </h3>
-
             </div>
-
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-
                 <p class="text-sm text-slate-500">
                     Current Page
                 </p>
-
                 <h3 class="mt-2 text-3xl font-bold text-indigo-600">
                     {{ currentPage }}
                 </h3>
-
             </div>
-
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-
                 <p class="text-sm text-slate-500">
                     Total Pages
                 </p>
-
                 <h3 class="mt-2 text-3xl font-bold text-purple-600">
                     {{ totalPages }}
                 </h3>
-
             </div>
-
         </div>
-
         <!-- LOADING STATE -->
-
         <div *ngIf="loading" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
-
             <div class="animate-pulse space-y-4">
-
                 <div class="h-14 rounded-xl bg-slate-200"></div>
                 <div class="h-14 rounded-xl bg-slate-200"></div>
                 <div class="h-14 rounded-xl bg-slate-200"></div>
                 <div class="h-14 rounded-xl bg-slate-200"></div>
                 <div class="h-14 rounded-xl bg-slate-200"></div>
-
             </div>
-
         </div>
-
         <!-- SERVICES TABLE -->
-
         <div *ngIf="!loading" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-
             <!-- TABLE HEADER -->
-
             <div
                 class="px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
                 <div>
-
                     <h2 class="text-lg font-semibold text-slate-800">
                         Service Directory
                     </h2>
-
                     <p class="mt-1 text-sm text-slate-500">
                         Hospital services and pricing information
                     </p>
-
                 </div>
-
                 <!-- SEARCH -->
-
                 <div class="w-full md:w-80">
-
                     <input [(ngModel)]="searchTerm" type="text" placeholder="Search services..." class="w-full px-4 py-3 rounded-xl
                    border border-slate-300
                    focus:ring-4 focus:ring-indigo-100
                    focus:border-indigo-500
                    outline-none transition-all">
-
                 </div>
-
             </div>
-
             <!-- TABLE -->
-
             <div class="overflow-x-auto">
-
                 <table class="w-full">
-
                     <thead class="bg-slate-50">
-
                         <tr>
-
                             <th
                                 class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Service Name
                             </th>
-
                             <th
                                 class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Category
                             </th>
-
                             <th
                                 class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Price
                             </th>
-
                             <th
                                 class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Actions
                             </th>
-
                         </tr>
-
                     </thead>
-
                     <tbody class="divide-y divide-slate-100">
-
-                        <tr *ngFor="let s of filteredServices" class="hover:bg-slate-50 transition-all duration-200">
-
+                        <tr *ngFor="let s of paginatedServices" class="hover:bg-slate-50 transition-all duration-200">
                             <!-- NAME -->
-
                             <td class="px-6 py-4">
-
                                 <div class="font-semibold text-slate-900">
                                     {{ s.name }}
                                 </div>
-
                             </td>
-
                             <!-- CATEGORY -->
-
                             <td class="px-6 py-4">
-
                                 <!-- Consultation -->
                                 <span *ngIf="s.category === 'Consultation'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
                                     🩺 Consultation
                                 </span>
-
                                 <!-- Lab -->
                                 <span *ngIf="s.category === 'Lab'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
                                     🧪 Lab
                                 </span>
-
                                 <!-- Room -->
                                 <span *ngIf="s.category === 'Room'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
                                     🛏️ Room
                                 </span>
-
                                 <!-- Medicine -->
                                 <span *ngIf="s.category === 'Medicine'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
                                     💊 Medicine
                                 </span>
-
                                 <!-- Surgery -->
                                 <span *ngIf="s.category === 'Surgery'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
                                     🏥 Surgery
                                 </span>
-
                                 <!-- Other -->
                                 <span *ngIf="s.category === 'Other'"
                                     class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
                                     📋 Other
                                 </span>
-
                             </td>
-
                             <!-- PRICE -->
-
                             <td class="px-6 py-4">
-
                                 <span class="text-green-600 font-bold text-base">
                                     ₹{{ s.price }}
                                 </span>
-
                             </td>
-
                             <!-- ACTIONS -->
-
                             <td class="px-6 py-4">
-
                                 <div class="flex justify-center gap-2">
-
                                     <a [routerLink]="['/services', s._id, 'edit']" class="px-3 py-2 rounded-xl
                            bg-blue-50 text-blue-600
                            font-medium
                            hover:bg-blue-100
                            transition">
-
                                         Edit
-
                                     </a>
-
                                     <button *ngIf="authService.isAdmin()" (click)="deleteService(s._id!)" class="px-3 py-2 rounded-xl
                            bg-red-50 text-red-600
                            font-medium
                            hover:bg-red-100
                            transition">
-
                                         Delete
-
                                     </button>
-
                                 </div>
-
                             </td>
-
                         </tr>
-
-                        <!-- EMPTY STATE -->
-
+                        <!-- EMPTY STATE (single, conditional message — replaces the old 3 overlapping rows) -->
                         <tr *ngIf="paginatedServices.length === 0">
-
                             <td colspan="4" class="py-20">
-
                                 <div class="text-center">
-
                                     <div class="text-6xl mb-4">
                                         🏥
                                     </div>
-
                                     <h3 class="text-lg font-semibold text-slate-700">
-                                        No Services Found
+                                        {{ services.length === 0 ? 'No Services Found' : ('No services match "' +
+                                        searchTerm + '"') }}
                                     </h3>
-
                                     <p class="mt-2 text-slate-500">
-                                        Add your first hospital service to get started.
+                                        {{ services.length === 0 ? 'Add your first hospital service to get started.' :
+                                        'Try a different search term.' }}
                                     </p>
-
-                                    <a routerLink="/services/new" class="inline-flex mt-5 px-5 py-3 rounded-xl
+                                    <a *ngIf="services.length === 0" routerLink="/services/new" class="inline-flex mt-5 px-5 py-3 rounded-xl
                            bg-indigo-600 text-white
                            hover:bg-indigo-700 transition">
-
                                         Add Service
-
                                     </a>
-
                                 </div>
-
-                            </td>
-
-                        </tr>
-                        <!-- No services at all -->
-                        <tr *ngIf="services.length === 0">
-                            <td colspan="4" class="px-4 py-6 text-center text-gray-400">No services yet.</td>
-                        </tr>
-
-                        <!-- Services exist, but none match the search -->
-                        <tr *ngIf="services.length > 0 && filteredServices.length === 0">
-                            <td colspan="4" class="px-4 py-6 text-center text-gray-400">
-                                No services match "{{ searchTerm }}".
                             </td>
                         </tr>
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
         <!-- PAGINATION -->
-
-        <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
-
+        <div *ngIf="filteredServices.length > 0"
+            class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-
                 <!-- PREVIOUS -->
-
                 <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-4 py-2 rounded-xl border border-slate-300
                  hover:bg-slate-100
                  disabled:opacity-40
                  disabled:cursor-not-allowed transition">
-
                     ← Previous
-
                 </button>
-
                 <!-- PAGE NUMBERS -->
-
                 <div class="flex gap-2">
-
                     <button *ngFor="let page of pages" (click)="goToPage(page)"
                         class="w-10 h-10 rounded-xl text-sm font-medium transition-all" [ngClass]="
               page === currentPage
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'border border-slate-300 bg-white hover:bg-slate-100'
             ">
-
                         {{ page }}
-
                     </button>
-
                 </div>
-
                 <!-- NEXT -->
-
                 <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="px-4 py-2 rounded-xl border border-slate-300
                  hover:bg-slate-100
                  disabled:opacity-40
                  disabled:cursor-not-allowed transition">
-
                     Next →
-
                 </button>
-
             </div>
-
             <!-- FOOTER -->
-
             <div class="mt-4 pt-4 border-t border-slate-100
                flex flex-col md:flex-row
                items-center justify-between
                gap-2 text-sm text-slate-500">
-
                 <span>
                     Showing page
                     <strong>{{ currentPage }}</strong>
                     of
                     <strong>{{ totalPages }}</strong>
                 </span>
-
                 <span>
                     Total Services:
                     <strong class="text-slate-800">
                         {{ services.length }}
                     </strong>
                 </span>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
