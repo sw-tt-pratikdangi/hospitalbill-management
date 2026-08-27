@@ -13,9 +13,12 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage = '';
+  showPassword = false;
 
   constructor(private authService: AuthService, private router: Router, private cdr: ChangeDetectorRef) { }
-
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
   onLogin(): void {
     this.authService.login(this.credentials).subscribe({
       next: () => this.router.navigate(['/dashboard']),

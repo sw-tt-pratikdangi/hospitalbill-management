@@ -9,12 +9,18 @@ import { ServiceFormComponent } from './components/service-form/service-form.com
 import { BillListComponent } from './components/bill-list/bill-list.component';
 import { BillFormComponent } from './components/bill-form/bill-form.component';
 import { BillDetailComponent } from './components/bill-detail/bill-detail.component';
+import { AssistantComponent } from './components/assistant/assistant.component';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 import { guestGuard } from './guards/guest.guard';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
     { path: 'register', component: RegisterComponent },
+    { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
+    { path: 'reset-password/:token', component: ResetPasswordComponent, canActivate: [guestGuard] },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
 
     { path: 'patients', component: PatientListComponent, canActivate: [authGuard] },
@@ -27,6 +33,8 @@ export const routes: Routes = [
 
     { path: 'bills', component: BillListComponent, canActivate: [authGuard] },
     { path: 'bills/new', component: BillFormComponent, canActivate: [authGuard] },
-    { path: 'bills/:id', component: BillDetailComponent, canActivate: [authGuard] }
+    { path: 'bills/:id', component: BillDetailComponent, canActivate: [authGuard] },
+
+    { path: 'assistant', component: AssistantComponent, canActivate: [authGuard, adminGuard] }
     // Service and Bill routes get added in the next modules
 ];
