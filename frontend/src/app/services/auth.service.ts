@@ -44,4 +44,12 @@ export class AuthService {
     isAdmin(): boolean {
         return this.getRole() === 'Admin';
     }
+
+    forgotPassword(email: string): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, { email });
+    }
+
+    resetPassword(token: string, password: string): Observable<{ message: string }> {
+        return this.http.put<{ message: string }>(`${this.baseUrl}/reset-password/${token}`, { password });
+    }
 }

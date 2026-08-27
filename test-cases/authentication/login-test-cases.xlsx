@@ -1,0 +1,7 @@
+Test Case ID	Module	Test Scenario	Preconditions	Test Steps	Test Data	Expected Result	Actual Result	Status
+TC_AUTH_001	Login	Valid email + valid password	User exists	Enter email ? Enter password ? Click Login	Valid email/password	Login successful and user redirected to dashboard		Not Executed
+TC_AUTH_002	Login	Valid email + wrong password	User exists	Enter email ? Enter wrong password ? Click Login	Valid email/wrong password	Login rejected and error message displayed		Not Executed
+TC_AUTH_003	Login	Invalid email + valid password	Login page available	Enter invalid email ? Enter password ? Click Login	Invalid email/valid password	Login rejected		Not Executed
+TC_AUTH_004	Login	Empty email	Login page available	Leave email empty ? Enter password ? Click Login	Empty email	Email validation error displayed		Not Executed
+TC_AUTH_005	Login	Empty password	Login page available	Enter email ? Leave password empty ? Click Login	Empty password	Password validation error displayed		Not Executed
+TC_AUTH_006	Login	No authentication credentials	Login page available	Leave email and password empty ? Click Login	Empty email/password	Validation errors displayed		Not Executed

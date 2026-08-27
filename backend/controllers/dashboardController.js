@@ -1,6 +1,8 @@
 const Patient = require('../models/Patient');
 const Bill = require('../models/Bill');
 
+
+
 exports.getStats = async (req, res) => {
     const [totalPatients, totalBills, revenueAgg, pendingAgg, statusCounts] = await Promise.all([
         Patient.countDocuments(),

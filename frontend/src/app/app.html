@@ -81,6 +81,16 @@
                         Bills
 
                     </a>
+                    <a *ngIf="userRole == 'Admin'" routerLink="/assistant" routerLinkActive="bg-blue-50 text-blue-700"
+                        class="px-4 py-2 rounded-xl
+                   text-sm font-medium text-slate-600
+                   hover:bg-slate-100
+                   hover:text-slate-900
+                   transition-all duration-200">
+
+                        AI Assistant
+
+                    </a>
 
                 </nav>
 
@@ -141,7 +151,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="border-t border-slate-200 bg-white">
+<footer *ngIf="isLoggedIn" class="border-t border-slate-200 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div class="flex flex-col gap-6 py-6

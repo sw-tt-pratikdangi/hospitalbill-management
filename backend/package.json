@@ -6,7 +6,13 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
-    "debug": "set DEBUG=express:*&& nodemon --inspect server.js"
+    "debug": "set DEBUG=express:*&& nodemon --inspect server.js",
+    "test": "jest --runInBand"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -22,10 +28,13 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.5.0",
-    "mongoose": "^9.9.1"
+    "mongoose": "^9.9.1",
+    "nodemailer": "^9.0.5"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
   }
 }
